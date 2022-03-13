@@ -1,4 +1,5 @@
 const baseUrl = "https://www.anapioficeandfire.com/api/";
+var buttonNum = 1;
 
 const CreateScrollMenu = async () => {
     await fetch(baseUrl + "books")
@@ -7,6 +8,11 @@ const CreateScrollMenu = async () => {
         {
                     // console.log("Total Data : " +data.length);
                     // console.log(data);
+                    // var prevButton = document.createElement ("button");
+                    // prevButton.innerHTML="<<";
+                    // prevButton.setAttribute("id","prevButton");
+                    // prevButton.setAttribute("class","prev-button");
+                    // scrollBarDiv.append(prevButton);
                     for(var i=1;i<=data.length;i++)
                     {
                         var buttonScroll = document.createElement ("button");
@@ -17,6 +23,11 @@ const CreateScrollMenu = async () => {
                         buttonScroll.appendChild(buttonScrollText);
                         scrollBarDiv.appendChild(buttonScroll);
                     }
+                    // var nextButton = document.createElement ("button");
+                    // nextButton.innerHTML=">>";
+                    // nextButton.setAttribute("id","nextButton");
+                    // nextButton.setAttribute("class","next-button");
+                    // scrollBarDiv.append(nextButton);
         })
     .catch((err) => {console.log(err);});
 }
@@ -30,6 +41,10 @@ const getBookData = async (page) => {
     .then(res => res.json())
     .then(data => 
         {   
+            var contentDiv = document.createElement("div");
+            contentDiv.setAttribute("id","content")
+            //getBookData(1);
+            mainContain.appendChild(contentDiv);
             var bname=data[0].name;
             var bisbn=data[0].isbn;
             var bnopages=data[0].numberOfPages;
@@ -39,7 +54,7 @@ const getBookData = async (page) => {
                 bauthor[i]=data[0].authors[i];
             }
             var bpublish=data[0].publisher;
-            var breleasedate=data[0].released;
+            var breleasedate=Date.parse(data[0].released);
             
             
             console.log("Name : " + bname);
@@ -52,7 +67,7 @@ const getBookData = async (page) => {
 
             var bcharecters = [];
 
-            console.log("Characters : ")
+            //console.log("Characters : ")
             for(var j=0;j<5;j++)
             {
                 var fetchURL = data[0].characters[j];   
@@ -62,9 +77,9 @@ const getBookData = async (page) => {
                     .then(res => res.json())
                     .then(data => 
                         {
-                            bcharecters[j] = data.name;
+                            bcharecters= data.name;
                             //console.log(data.name);
-                            console.log(bcharecters[j]);
+                            console.log(bcharecters);
                         })  
                     .catch((err) => {console.log("Error in Character Name Fetch : " + err)});
                 })(fetchURL);
@@ -148,6 +163,7 @@ const getBookData = async (page) => {
 };
 //getBooksData();
 //getBookData(7);
+getBookData(buttonNum);
 var mainContain = document.createElement("div");
 mainContain.setAttribute("id","main-container");
 document.body.append(mainContain);
@@ -167,19 +183,56 @@ mainContain.append(scrollBarDiv);
 
 //document.getElementById("btnid1").addEventListener('click', () => getBookData(1));
 
-var contentDiv = document.createElement("div");
-contentDiv.setAttribute("id","content")
-//getBookData(1);
-mainContain.appendChild(contentDiv);
+
 
 
 var eventListen = document.addEventListener('click',function(e){
-    var buttonNum = [];
+    
     if(e.target.classList.contains('nav-button'))
     {
             buttonNum=e.target.innerText;
-            alert(buttonNum);
-            //console.log(buttonNum);
+            //alert(buttonNum);
+            console.log(buttonNum);
             getBookData(buttonNum);
     }
 })
+
+// var prevButtonListen = document.addEventListener('click',function(e){
+//     if(e.target.classList.contains('prev-button'))
+//     {
+//         if(buttonNum>1)
+//         {
+//             buttonNum = parstInt(buttonNum) - 1;
+//             getBookData(buttonNum);
+//         }
+//         else
+//         {
+//             alert("No Previous Pages");
+//         }
+//     }
+// });
+
+// var nextButtonListen = document.addEventListener('click',function(e){
+//     if(e.target.classList.contains('next-button'))
+//     {   
+//         const TotalPages = async () => {
+//             await fetch(baseUrl + "books")
+//             .then(res => res.json())
+//             .then(data => 
+//                 {
+//                     alert(data.length);
+//                     if(buttonNum<data.length)
+//                     {
+//                         buttonNum = parseInt(buttonNum) + 1;
+//                         getBookData(buttonNum);
+//                     }
+//                     else
+//                     {
+//                         alert("This is the last page!");
+//                     }
+//                 }
+//             )
+//             .catch ((ex) => {console.log(ex)});
+//         }
+//     }
+// });
